@@ -1,0 +1,30 @@
+import logging
+from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
+
+# Set up logging
+logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+                    level=logging.INFO)
+
+# Define the start function for the /start command
+def start(update, context):
+    context.bot.send_message(chat_id=update.effective_chat.id, text="Hello, I'm a bot! How can I assist you?")
+
+# Define the echo function to reply to any message with the same message
+def echo(update, context):
+    context.bot.send_message(chat_id=update.effective_chat.id, text=update.message.text)
+
+# Set up the Telegram bot with the API token received from BotFather
+updater = Updater(token='YOUR_API_TOKEN', use_context=True)
+
+# Set up the dispatcher to handle commands and messages
+dispatcher = updater.dispatcher
+
+# Add the start and echo handlers to the dispatcher
+dispatcher.add_handler(CommandHandler('start', start))
+dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, echo))
+
+# Start the bot
+updater.start_polling()
+
+# Run the bot until it's stopped
+updater.idle()
